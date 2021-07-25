@@ -20,7 +20,7 @@ pipeline {
 		stage('Checkout') {
 			steps {
 				sh 'mvn -v'
-				// sh 'docker version' // commenting this out to fix permission denied issue
+				sh 'docker version' 
 				echo "Build"
 				echo "PATH - $PATH"
 				echo "BUILD_NUMBER - $env.BUILD_NUMBER"
@@ -43,6 +43,28 @@ pipeline {
 		stage('Integration Test') {
 			steps {
 				sh 'mvn failsafe:integration-test failsafe:verify'
+			}
+		}
+		stage('Package') {
+			steps {
+				sh 'mvn package -DskipTests'
+			}
+		}
+		stage('Build Docker Image') {
+			steps {
+				script {
+					dockerImage = docker.build('in28minutes/currencyconversionservice:${env.BUILD_TAG}')
+				}
+			}
+		}
+		stage('Push Docker Image') {
+			steps {
+				script {
+					docker.withRegistry('', 'dockerhub') {
+						dockerImage.push();
+						dockerImage.push('latest')
+					}
+				}
 			}
 		}
 	}
