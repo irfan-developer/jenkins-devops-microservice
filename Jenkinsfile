@@ -17,7 +17,7 @@ pipeline {
 		PATH = "$mavenHome/bin:$dockerHome/bin:$PATH"
 	}
 	stages {
-		stage('Build') {
+		stage('Checkout') {
 			steps {
 				sh 'mvn -v'
 				// sh 'docker version' // commenting this out to fix permission denied issue
@@ -30,14 +30,17 @@ pipeline {
 				echo "BUILD_URL - $env.BUILD_URL"
 			}
 		}
+		stage('Compile') {
+			sh 'mvn clean compile'
+		}
 		stage('Unit Test') {
 			steps {
-				echo "Unit Test"
+				sh 'mvn test'
 			}
 		}
 		stage('Integration Test') {
 			steps {
-				echo "Integration Test"
+				sh 'mvn failsafe:integration-test failsafe:verify'
 			}
 		}
 	}
