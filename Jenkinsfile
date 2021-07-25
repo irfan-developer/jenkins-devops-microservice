@@ -20,7 +20,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				sh 'mvn -v'
-				sh 'docker version'
+				// sh 'docker version' // commenting this out to fix permission denied issue
 				echo "Build"
 				echo "PATH - $PATH"
 				echo "BUILD_NUMBER - $env.BUILD_NUMBER"
