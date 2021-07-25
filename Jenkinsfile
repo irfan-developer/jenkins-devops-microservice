@@ -53,7 +53,7 @@ pipeline {
 		stage('Build Docker Image') {
 			steps {
 				script {
-					dockerImage = docker.build('in28minutes/currencyconversionservice:${env.BUILD_TAG}')
+					dockerImage = docker.build('mdirfanmullick/in28min/hello-world-java:${env.BUILD_TAG}')
 				}
 			}
 		}
